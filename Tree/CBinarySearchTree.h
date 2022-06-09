@@ -8,6 +8,13 @@ struct STreeNode
 	STreeNode* psRight;
 };
 
+enum ENodeMatchType
+{
+	EXACT_MATCH,
+	CLOSEST_MATCH,
+	NO_MATCH
+};
+
 
 class CBinarySearchTree
 {
@@ -21,11 +28,12 @@ class CBinarySearchTree
 		bool delNode(STreeNode* psTreeWalker, STreeNode* psTwParent);
 
 		void inorderTraverse(STreeNode* psRoot);
+		STreeNode* walkPathTo(int iNumber, bool bExactMatch, STreeNode** ppsTwParent, void (*visitNode)(STreeNode*));
 
 	public:
-		bool insert(int iNumber, void* pvExtAllocData);
-		STreeNode* find(int iNumber, bool bExactMatch, STreeNode** ppsTwParent);
+		bool insert(int iNumber, void* pvExtAllocData, void (*visitNode)(STreeNode*));
 		bool remove(int iNumber);
+		ENodeMatchType find(int iNumber, bool bExactMatch);
 
 		void inorderPrint();
 

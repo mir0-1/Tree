@@ -3,11 +3,15 @@
 #include <cstdlib>
 #include "CBinarySearchTree.h"
 
+void visitNode(STreeNode* psNode)
+{
+	printf("Visited node with number %d\n", psNode->iNumber);
+}
+
 int main()
 {
 	int key, i, op;
 	CBinarySearchTree bst;
-	STreeNode* root = (STreeNode*)1515;
 
 	srand(time(NULL));
 	key = 0;
@@ -23,7 +27,7 @@ int main()
 		{
 			printf("insert key:");
 			scanf("%d", &key);
-			bst.insert(key, NULL);
+			bst.insert(key, NULL, visitNode);
 			printf("Inserted %d to BST\n", key);
 		}
 
