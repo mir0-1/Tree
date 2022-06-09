@@ -36,6 +36,7 @@ int main()
 		}
 	}
 
+	bst.inorderPrint();
 
 	return 0;
 }

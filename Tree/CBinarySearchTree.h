@@ -20,10 +20,14 @@ class CBinarySearchTree
 		bool delNode_twoChildrenCase(STreeNode* psTreeWalker);
 		bool delNode(STreeNode* psTreeWalker, STreeNode* psTwParent);
 
+		void inorderTraverse(STreeNode* psRoot);
+
 	public:
 		bool insert(int iNumber, void* pvExtAllocData);
 		STreeNode* find(int iNumber, bool bExactMatch, STreeNode** ppsTwParent);
 		bool remove(int iNumber);
+
+		void inorderPrint();
 
 		CBinarySearchTree();
 };

@@ -103,6 +103,20 @@ bool CBinarySearchTree::delNode(STreeNode* psTreeWalker, STreeNode* psTwParent)
 	return false;
 }
 
+void CBinarySearchTree::inorderTraverse(STreeNode* psRoot)
+{
+	if (psRoot == nullptr)
+		return;
+
+	if (psRoot->psLeft)
+		inorderTraverse(psRoot->psLeft);
+
+	printf("%d\t", psRoot->iNumber);
+
+	if (psRoot->psRight)
+		inorderTraverse(psRoot->psRight);
+}
+
 
 
 bool CBinarySearchTree::insert(int iNumber, void* pvExtAllocExtraData)
@@ -193,6 +207,11 @@ bool CBinarySearchTree::remove(int iNumber)
 	STreeNode* psTreeWalker = find(iNumber, true, &psTwParent);
 
 	return delNode(psTreeWalker, psTwParent);
+}
+
+void CBinarySearchTree::inorderPrint()
+{
+	inorderTraverse(psRoot);
 }
 
 CBinarySearchTree::CBinarySearchTree()
