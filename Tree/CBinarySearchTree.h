@@ -26,12 +26,12 @@ class CBinarySearchTree
 		bool delNode_oneChildCase(STreeNode* psTreeWalker);
 		bool delNode_twoChildrenCase(STreeNode* psTreeWalker);
 		bool delNode(STreeNode* psTreeWalker, STreeNode* psTwParent);
-
 		void inorderTraverse(STreeNode* psRoot);
-		STreeNode* walkPathTo(int iNumber, bool bExactMatch, STreeNode** ppsTwParent, void (*visitNode)(STreeNode*));
+		STreeNode* walkPathTo(int iNumber, bool bExactMatch, STreeNode** ppsTwParent);
 
+		virtual void visitNode(STreeNode* psTreeWalker);
 	public:
-		bool insert(int iNumber, void* pvExtAllocData, void (*visitNode)(STreeNode*));
+		bool insert(int iNumber, void* pvExtAllocData);
 		bool remove(int iNumber);
 		ENodeMatchType find(int iNumber, bool bExactMatch);
 

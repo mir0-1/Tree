@@ -2,16 +2,13 @@
 #include <ctime>
 #include <cstdlib>
 #include "CBinarySearchTree.h"
+#include "CAvlTree.h"
 
-void visitNode(STreeNode* psNode)
-{
-	printf("Visited node with number %d\n", psNode->iNumber);
-}
 
 int main()
 {
-	int key, i, op;
-	CBinarySearchTree bst;
+	int key, i, op, test;
+	CAvlTree bst;
 
 	srand(time(NULL));
 	key = 0;
@@ -27,7 +24,7 @@ int main()
 		{
 			printf("insert key:");
 			scanf("%d", &key);
-			bst.insert(key, NULL, visitNode);
+			bst.insert(key, nullptr);
 			printf("Inserted %d to BST\n", key);
 		}
 

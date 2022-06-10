@@ -12,6 +12,8 @@ STreeNode* CBinarySearchTree::newNode(int iNumber, void* pvAllocExtraData)
 	sNode->psLeft = nullptr;
 	sNode->psRight = nullptr;
 
+	visitNode(sNode);
+
 	return sNode;
 }
 
@@ -103,6 +105,32 @@ bool CBinarySearchTree::delNode(STreeNode* psTreeWalker, STreeNode* psTwParent)
 	return false;
 }
 
+bool CBinarySearchTree::insert(int iNumber, void* pvExtAllocData)
+{
+	STreeNode* psCvnParent;
+	STreeNode* psClosestValueNode = walkPathTo(iNumber, false, &psCvnParent);
+
+	if (psClosestValueNode == nullptr)
+	{
+		psRoot = newNode(iNumber, pvExtAllocData);
+		return true;
+	}
+
+	if (psClosestValueNode->psLeft == nullptr && iNumber < psClosestValueNode->iNumber)
+	{
+		psClosestValueNode->psLeft = newNode(iNumber, pvExtAllocData);
+		return true;
+	}
+
+	if (psClosestValueNode->psRight == nullptr && iNumber > psClosestValueNode->iNumber)
+	{
+		psClosestValueNode->psRight = newNode(iNumber, pvExtAllocData);
+		return true;
+	}
+
+	return false;
+}
+
 void CBinarySearchTree::inorderTraverse(STreeNode* psRoot)
 {
 	if (psRoot == nullptr)
@@ -119,34 +147,7 @@ void CBinarySearchTree::inorderTraverse(STreeNode* psRoot)
 
 
 
-bool CBinarySearchTree::insert(int iNumber, void* pvExtAllocExtraData, void (*visitNode)(STreeNode*))
-{
-	STreeNode* sCvnParent;
-	STreeNode* sClosestValueNode = walkPathTo(iNumber, false, &sCvnParent, visitNode);
-
-	if (sClosestValueNode == nullptr)
-	{
-		psRoot = newNode(iNumber, pvExtAllocExtraData);
-		return true;
-	}
-
-	if (sClosestValueNode->psLeft == nullptr && iNumber < sClosestValueNode->iNumber)
-	{
-		sClosestValueNode->psLeft = newNode(iNumber, pvExtAllocExtraData);
-		return true;
-	}
-
-	if (sClosestValueNode->psRight == nullptr && iNumber > sClosestValueNode->iNumber)
-	{
-		sClosestValueNode->psRight = newNode(iNumber, pvExtAllocExtraData);
-		return true;
-	}
-
-	return false;
-}
-
-
-STreeNode* CBinarySearchTree::walkPathTo(int iNumber, bool bExactMatch, STreeNode** ppsTwParent, void (*visitNode)(STreeNode*))
+STreeNode* CBinarySearchTree::walkPathTo(int iNumber, bool bExactMatch, STreeNode** ppsTwParent)
 {
 	STreeNode* psTreeWalker = psRoot;
 
@@ -155,8 +156,7 @@ STreeNode* CBinarySearchTree::walkPathTo(int iNumber, bool bExactMatch, STreeNod
 
 	while (psTreeWalker)
 	{
-		if (visitNode)
-			visitNode(psTreeWalker);
+		visitNode(psTreeWalker);
 
 		if (iNumber == psTreeWalker->iNumber)
 			return psTreeWalker;
@@ -190,14 +190,16 @@ STreeNode* CBinarySearchTree::walkPathTo(int iNumber, bool bExactMatch, STreeNod
 bool CBinarySearchTree::remove(int iNumber)
 {
 	STreeNode* psTwParent;
-	STreeNode* psTreeWalker = walkPathTo(iNumber, true, &psTwParent, nullptr);
+	STreeNode* psTreeWalker = walkPathTo(iNumber, true, &psTwParent);
 
 	return delNode(psTreeWalker, psTwParent);
 }
 
+void CBinarySearchTree::visitNode(STreeNode* psTreeWalker) {}
+
 ENodeMatchType CBinarySearchTree::find(int iNumber, bool bExactMatch)
 {
-	STreeNode* psResult = walkPathTo(iNumber, bExactMatch, nullptr, nullptr);
+	STreeNode* psResult = walkPathTo(iNumber, bExactMatch, nullptr);
 
 	if (psResult->iNumber == iNumber)
 		return ENodeMatchType::EXACT_MATCH;
