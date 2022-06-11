@@ -8,17 +8,17 @@
 int main()
 {
 	int key, i, op, test;
-	CAvlTree bst;
+	CBinarySearchTree bst;
+	CTnStack oStack;
 
 	srand(time(NULL));
 	key = 0;
 	
 	while (true)
 	{
-		printf("Enter op. Insert:0\tDelete:1\tExit:2\n");
-		printf("op:");
+		printf("Enter op.\nTREE:\tInsert:0\tDelete:1\nSTACK:\tPush:2\t\tPop:3\nEXIT:\tExit:-1\nop:");
 		scanf("%d", &op);
-		if (op == 2)
+		if (op == -1)
 			break;
 		if (op == 0)
 		{
@@ -34,6 +34,18 @@ int main()
 			scanf("%d", &key);
 			bst.remove(key);
 			printf("Removed %d from BST\n", key);
+		}
+
+		else if (op == 2)
+		{
+			printf("push key: ");
+			scanf("%d", &key);
+			oStack.push((STreeNode*)key);
+		}
+
+		else if (op == 3)
+		{
+			oStack.pop(nullptr);
 		}
 	}
 

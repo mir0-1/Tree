@@ -128,11 +128,14 @@
   <ItemGroup>
     <ClCompile Include="CAvlTree.cpp" />
     <ClCompile Include="CBinarySearchTree.cpp" />
+    <ClCompile Include="CTnStack.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CAvlTree.h" />
     <ClInclude Include="CBinarySearchTree.h" />
+    <ClInclude Include="CTnStack.h" />
+    <ClInclude Include="STreeNode.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

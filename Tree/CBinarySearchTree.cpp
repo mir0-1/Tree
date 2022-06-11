@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 
-STreeNode* CBinarySearchTree::newNode(int iNumber, void* pvAllocExtraData)
+STreeNode* CBinarySearchTree::newNode(int iNumber, void* pvAllocExtraData, bool bUseStack)
 {
 	STreeNode* sNode = new STreeNode;
 
@@ -12,7 +12,8 @@ STreeNode* CBinarySearchTree::newNode(int iNumber, void* pvAllocExtraData)
 	sNode->psLeft = nullptr;
 	sNode->psRight = nullptr;
 
-	visitNode(sNode);
+	if (bUseStack)
+		oTnStack.push(sNode);
 
 	return sNode;
 }
@@ -105,26 +106,26 @@ bool CBinarySearchTree::delNode(STreeNode* psTreeWalker, STreeNode* psTwParent)
 	return false;
 }
 
-bool CBinarySearchTree::insert(int iNumber, void* pvExtAllocData)
+bool CBinarySearchTree::util_insert(int iNumber, void* pvExtAllocData, bool bUseStack)
 {
 	STreeNode* psCvnParent;
-	STreeNode* psClosestValueNode = walkPathTo(iNumber, false, &psCvnParent);
+	STreeNode* psClosestValueNode = walkPathTo(iNumber, false, &psCvnParent, bUseStack);
 
 	if (psClosestValueNode == nullptr)
 	{
-		psRoot = newNode(iNumber, pvExtAllocData);
+		psRoot = newNode(iNumber, pvExtAllocData, bUseStack);
 		return true;
 	}
 
 	if (psClosestValueNode->psLeft == nullptr && iNumber < psClosestValueNode->iNumber)
 	{
-		psClosestValueNode->psLeft = newNode(iNumber, pvExtAllocData);
+		psClosestValueNode->psLeft = newNode(iNumber, pvExtAllocData, bUseStack);
 		return true;
 	}
 
 	if (psClosestValueNode->psRight == nullptr && iNumber > psClosestValueNode->iNumber)
 	{
-		psClosestValueNode->psRight = newNode(iNumber, pvExtAllocData);
+		psClosestValueNode->psRight = newNode(iNumber, pvExtAllocData, bUseStack);
 		return true;
 	}
 
@@ -146,8 +147,7 @@ void CBinarySearchTree::inorderTraverse(STreeNode* psRoot)
 }
 
 
-
-STreeNode* CBinarySearchTree::walkPathTo(int iNumber, bool bExactMatch, STreeNode** ppsTwParent)
+STreeNode* CBinarySearchTree::walkPathTo(int iNumber, bool bExactMatch, STreeNode** ppsTwParent, bool bUseStack)
 {
 	STreeNode* psTreeWalker = psRoot;
 
@@ -156,7 +156,8 @@ STreeNode* CBinarySearchTree::walkPathTo(int iNumber, bool bExactMatch, STreeNod
 
 	while (psTreeWalker)
 	{
-		visitNode(psTreeWalker);
+		if (bUseStack)
+			oTnStack.push(psTreeWalker);
 
 		if (iNumber == psTreeWalker->iNumber)
 			return psTreeWalker;
@@ -187,19 +188,18 @@ STreeNode* CBinarySearchTree::walkPathTo(int iNumber, bool bExactMatch, STreeNod
 	return nullptr;
 }
 
-bool CBinarySearchTree::remove(int iNumber)
+bool CBinarySearchTree::util_remove(int iNumber, bool bUseStack)
 {
 	STreeNode* psTwParent;
-	STreeNode* psTreeWalker = walkPathTo(iNumber, true, &psTwParent);
+	STreeNode* psTreeWalker = walkPathTo(iNumber, true, &psTwParent, bUseStack);
 
 	return delNode(psTreeWalker, psTwParent);
 }
 
-void CBinarySearchTree::visitNode(STreeNode* psTreeWalker) {}
 
 ENodeMatchType CBinarySearchTree::find(int iNumber, bool bExactMatch)
 {
-	STreeNode* psResult = walkPathTo(iNumber, bExactMatch, nullptr);
+	STreeNode* psResult = walkPathTo(iNumber, bExactMatch, nullptr, false);
 
 	if (psResult->iNumber == iNumber)
 		return ENodeMatchType::EXACT_MATCH;
@@ -208,6 +208,16 @@ ENodeMatchType CBinarySearchTree::find(int iNumber, bool bExactMatch)
 		return ENodeMatchType::CLOSEST_MATCH;
 	
 	return ENodeMatchType::NO_MATCH;
+}
+
+bool CBinarySearchTree::insert(int iNumber, void* pvExtAllocData)
+{
+	return util_insert(iNumber, pvExtAllocData, false);
+}
+
+bool CBinarySearchTree::remove(int iNumber)
+{
+	return util_remove(iNumber, false);
 }
 
 void CBinarySearchTree::inorderPrint()
