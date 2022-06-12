@@ -12,6 +12,7 @@ unsigned int CTnStack::push(STreeNode* sNode)
 
 	psHead->pArrSTnodes[uiTotalElementCount % SSTACKNODE_ARRLEN] = sNode;
 	uiTotalElementCount++;
+
 	return uiTotalElementCount;
 }
 
@@ -39,6 +40,7 @@ STreeNode* CTnStack::pop(unsigned int* puiElementsLeft)
 
 	if (puiElementsLeft)
 		*puiElementsLeft = uiTotalElementCount;
+
 	return psPopped;
 }
 
@@ -52,6 +54,8 @@ void CTnStack::clear()
 		psHead = psHead->psNext;
 		delete psTemp;
 	}
+
+	uiTotalElementCount = 0;
 }
 
 CTnStack::CTnStack()

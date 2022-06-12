@@ -9,21 +9,23 @@ enum ENodeMatchType
 	NO_MATCH
 };
 
+extern class CAvlTree;
+
 class CBinarySearchTree
 {
 	private:
 		STreeNode* psRoot;
-		CTnStack oTnStack;
+		CTnStack *poTnStack;
 		
-		STreeNode* newNode(int iNumber, void* pvExtAllocData, bool bUseStack);
+		STreeNode* newNode(int iNumber, void* pvExtAllocData);
 		bool delNode_noChildrenCase(STreeNode* psTreeWalker, STreeNode* psTwParent);
 		bool delNode_oneChildCase(STreeNode* psTreeWalker);
 		bool delNode_twoChildrenCase(STreeNode* psTreeWalker);
 		bool delNode(STreeNode* psTreeWalker, STreeNode* psTwParent);
 		void inorderTraverse(STreeNode* psRoot);
-		STreeNode* walkPathTo(int iNumber, bool bExactMatch, STreeNode** ppsTwParent, bool bUseStack);
-		bool util_insert(int iNumber, void* pvExtAllocData, bool bUseStack);
-		bool util_remove(int iNumber, bool bUseStack);
+		STreeNode* walkPathTo(int iNumber, bool bExactMatch, STreeNode** ppsTwParent, bool bIsSearchOnly);
+
+		friend class CAvlTree;
 	public:
 		ENodeMatchType find(int iNumber, bool bExactMatch);
 		bool insert(int iNumber, void* pvExtAllocData);

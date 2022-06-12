@@ -1,6 +1,6 @@
 #pragma once
 #include "STreeNode.h"
-#define SSTACKNODE_ARRLEN 3
+#define SSTACKNODE_ARRLEN 128
 
 struct SStackNode
 {

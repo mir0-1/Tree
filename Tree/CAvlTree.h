@@ -7,5 +7,6 @@ class CAvlTree : public CBinarySearchTree
 
 	public:
 		CAvlTree();
+		~CAvlTree();
 };
 

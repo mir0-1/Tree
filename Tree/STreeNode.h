@@ -6,4 +6,5 @@ struct STreeNode
 	void* pvExtAllocData;
 	STreeNode* psLeft;
 	STreeNode* psRight;
+	unsigned int uiHeight;
 };
