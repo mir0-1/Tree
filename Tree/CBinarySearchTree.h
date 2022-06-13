@@ -23,7 +23,7 @@ class CBinarySearchTree
 		bool delNode_twoChildrenCase(STreeNode* psTreeWalker);
 		bool delNode(STreeNode* psTreeWalker, STreeNode* psTwParent);
 		void inorderTraverse(STreeNode* psRoot);
-		STreeNode* walkPathTo(int iNumber, bool bExactMatch, STreeNode** ppsTwParent, bool bIsSearchOnly);
+		STreeNode* walkPathFromTo(STreeNode* psStart, int iNumber, bool bExactMatch, STreeNode** ppsTwParent, bool bIsSearchOnly);
 
 		friend class CAvlTree;
 	public:

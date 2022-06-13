@@ -8,7 +8,7 @@
 int main()
 {
 	int key, i, op, test;
-	CAvlTree bst;
+	CBinarySearchTree bst;
 	CTnStack oStack;
 
 	srand(time(NULL));
