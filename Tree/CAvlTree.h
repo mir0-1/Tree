@@ -5,7 +5,7 @@ class CAvlTree : public CBinarySearchTree
 {
 	private:
 		int nodeHeight(STreeNode* psNode);
-		void updateHeights(STreeNode* psStartNode);
+		void updateHeights();
 	public:
 		bool insert(int iNumber, void* pvExtAllocData);
 		bool remove(int iNumber);

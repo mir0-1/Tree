@@ -16,7 +16,6 @@ class CBinarySearchTree
 	private:
 		STreeNode* psRoot;
 		CTnStack *poTnStack;
-		bool bBackwalk;
 		
 		STreeNode* newNode(int iNumber, void* pvExtAllocData);
 		bool delNode_noChildrenCase(STreeNode* psTreeWalker, STreeNode* psTwParent);
@@ -29,7 +28,7 @@ class CBinarySearchTree
 		friend class CAvlTree;
 	public:
 		ENodeMatchType find(int iNumber, bool bExactMatch);
-		STreeNode* util_insert(int iNumber, void* pvExtAllocData);
+		bool insert(int iNumber, void* pvExtAllocData);
 		bool remove(int iNumber);
 
 		void inorderPrint();

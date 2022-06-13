@@ -6,9 +6,5 @@ struct STreeNode
 	void* pvExtAllocData;
 	STreeNode* psLeft;
 	STreeNode* psRight;
-	union
-	{
-		unsigned int uiHeight;
-		STreeNode* psPrev;
-	} uMetadata;
+	unsigned int uiHeight;
 };
