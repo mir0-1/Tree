@@ -106,33 +106,29 @@ bool CBinarySearchTree::delNode(STreeNode* psTreeWalker, STreeNode* psTwParent)
 	return false;
 }
 
-bool CBinarySearchTree::insert(int iNumber, void* pvExtAllocData)
+STreeNode* CBinarySearchTree::util_insert(int iNumber, void* pvExtAllocData)
 {
-	if (poTnStack)
-		poTnStack->clear();
-
-	STreeNode* psCvnParent;
-	STreeNode* psClosestValueNode = walkPathTo(iNumber, false, &psCvnParent, false);
+	STreeNode* psClosestValueNode = walkPathTo(iNumber, false, nullptr, false);
+	STreeNode** ppsTargetNode = nullptr;
 
 	if (psClosestValueNode == nullptr)
+		ppsTargetNode = &psRoot;
+
+	else if (psClosestValueNode->psLeft == nullptr && iNumber < psClosestValueNode->iNumber)
+		ppsTargetNode = &psClosestValueNode->psLeft;
+
+	else if (psClosestValueNode->psRight == nullptr && iNumber > psClosestValueNode->iNumber)
+		ppsTargetNode = &psClosestValueNode->psRight;
+
+	if (ppsTargetNode)
 	{
-		psRoot = newNode(iNumber, pvExtAllocData);
-		return true;
+		*ppsTargetNode = newNode(iNumber, pvExtAllocData);
+		if (bBackwalk)
+			(*ppsTargetNode)->uMetadata.psPrev = psClosestValueNode;
+		return *ppsTargetNode;
 	}
 
-	if (psClosestValueNode->psLeft == nullptr && iNumber < psClosestValueNode->iNumber)
-	{
-		psClosestValueNode->psLeft = newNode(iNumber, pvExtAllocData);
-		return true;
-	}
-
-	if (psClosestValueNode->psRight == nullptr && iNumber > psClosestValueNode->iNumber)
-	{
-		psClosestValueNode->psRight = newNode(iNumber, pvExtAllocData);
-		return true;
-	}
-
-	return false;
+	return nullptr;
 }
 
 void CBinarySearchTree::inorderTraverse(STreeNode* psRoot)
@@ -153,31 +149,25 @@ void CBinarySearchTree::inorderTraverse(STreeNode* psRoot)
 STreeNode* CBinarySearchTree::walkPathTo(int iNumber, bool bExactMatch, STreeNode** ppsTwParent, bool bIsSearchOnly)
 {
 	STreeNode* psTreeWalker = psRoot;
-
-	if (ppsTwParent)
-		*ppsTwParent = nullptr;
+	STreeNode* psTwParent = nullptr;
 
 	while (psTreeWalker)
 	{
-		if (poTnStack && !bIsSearchOnly)
-			poTnStack->push(psTreeWalker);
-
 		if (iNumber == psTreeWalker->iNumber)
 			return psTreeWalker;
 
+		if (bBackwalk && !bIsSearchOnly)
+			psTreeWalker->uMetadata.psPrev = psTwParent;
+
 		if (psTreeWalker->psLeft && iNumber < psTreeWalker->iNumber)
 		{
-			if (ppsTwParent)
-				*ppsTwParent = psTreeWalker;
-
+			psTwParent = psTreeWalker;
 			psTreeWalker = psTreeWalker->psLeft;
 		}
 
 		else if (psTreeWalker->psRight && iNumber > psTreeWalker->iNumber)
 		{
-			if (ppsTwParent)
-				*ppsTwParent = psTreeWalker;
-
+			psTwParent = psTreeWalker;
 			psTreeWalker = psTreeWalker->psRight;
 		}
 
@@ -186,7 +176,11 @@ STreeNode* CBinarySearchTree::walkPathTo(int iNumber, bool bExactMatch, STreeNod
 	}
 
 	if (!bExactMatch)
+	{
+		if (ppsTwParent)
+			*ppsTwParent = psTwParent;
 		return psTreeWalker;
+	}
 
 	return nullptr;
 }

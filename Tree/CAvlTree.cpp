@@ -3,12 +3,12 @@
 
 bool CAvlTree::insert(int iNumber, void* pvExtAllocData)
 {
-	bool bResult = CBinarySearchTree::insert(iNumber, pvExtAllocData);
+	STreeNode* psResult = CBinarySearchTree::util_insert(iNumber, pvExtAllocData);
 
-	if (!bResult)
+	if (psResult == nullptr)
 		return false;
 
-	updateHeights();
+	updateHeights(psResult);
 
 	return true;
 }
@@ -23,28 +23,31 @@ int CAvlTree::nodeHeight(STreeNode* psNode)
 	if (psNode == nullptr)
 		return -1;
 
-	return psNode->uiHeight;
+	return psNode->uMetadata.uiHeight;
 }
 
-void CAvlTree::updateHeights()
+void CAvlTree::updateHeights(STreeNode* psPathWalker)
 {
-	STreeNode* psPassedNode;
+	STreeNode* psNextNode;
 
-	while (psPassedNode = poTnStack->pop(nullptr))
+	while (psPathWalker)
 	{
-		if (nodeHeight(psPassedNode->psLeft) >= nodeHeight(psPassedNode->psRight))
-			psPassedNode->uiHeight = nodeHeight(psPassedNode->psLeft) + 1;
+		psNextNode = psPathWalker->uMetadata.psPrev;
+
+		if (nodeHeight(psPathWalker->psLeft) >= nodeHeight(psPathWalker->psRight))
+			psPathWalker->uMetadata.uiHeight = nodeHeight(psPathWalker->psLeft) + 1;
 		else
-			psPassedNode->uiHeight = nodeHeight(psPassedNode->psRight) + 1;
+			psPathWalker->uMetadata.uiHeight = nodeHeight(psPathWalker->psRight) + 1;
+
+		psPathWalker = psNextNode;
 	}
 }
 
 CAvlTree::CAvlTree() : CBinarySearchTree()
 {
-	poTnStack = new CTnStack;
+	bBackwalk = true;
 }
 
 CAvlTree::~CAvlTree()
 {
-	delete poTnStack;
 }
