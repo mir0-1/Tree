@@ -15,7 +15,14 @@ bool CAvlTree::insert(int iNumber, void* pvExtAllocData)
 
 bool CAvlTree::remove(int iNumber)
 {
-	return false;
+	bool bResult = CBinarySearchTree::remove(iNumber);
+
+	if (!bResult)
+		return false;
+
+	updateHeights();
+
+	return true;
 }
 
 int CAvlTree::nodeHeight(STreeNode* psNode)
