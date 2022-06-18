@@ -168,7 +168,6 @@ STreeNode* CBinarySearchTree::walkPathFromTo(STreeNode* psStart, int iNumber, ST
 
 	while (psTreeWalker)
 	{
-
 		if (poTnStack && (eReason  == EWalkReason::DELETE || eReason == EWalkReason::INSERT || EWalkReason::DELETE_INORDER))
 			poTnStack->push(psTreeWalker);
 

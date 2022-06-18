@@ -9,20 +9,20 @@ enum ENodeMatchType
 	NO_MATCH
 };
 
-enum EWalkReason
-{
-	DELETE,
-	DELETE_INORDER,
-	INSERT,
-	FIND_CLOSEST,
-	FIND_EXACT,
-};
-
 extern class CAvlTree;
 
 class CBinarySearchTree
 {
 	private:
+		enum EWalkReason
+		{
+			DELETE,
+			DELETE_INORDER,
+			INSERT,
+			FIND_CLOSEST,
+			FIND_EXACT,
+		};
+
 		STreeNode* psRoot;
 		CTnStack *poTnStack;
 		

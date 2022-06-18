@@ -1,6 +1,6 @@
 #pragma once
 #include "STreeNode.h"
-#define SSTACKNODE_ARRLEN 128
+#define SSTACKNODE_ARRLEN 3
 
 struct SStackNode
 {
@@ -17,10 +17,10 @@ class CTnStack
 	public:
 		unsigned int push(STreeNode* sNode);
 		STreeNode* pop(unsigned int* puiElementsLeft);
+		STreeNode* peek(unsigned int uiDepth);
 		void clear();
 
 		CTnStack();
 
 		~CTnStack();
 };
-
