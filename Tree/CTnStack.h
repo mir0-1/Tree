@@ -4,7 +4,7 @@
 
 struct SStackNode
 {
-	STreeNode* pArrSTnodes[SSTACKNODE_ARRLEN];
+	STreeNode** pArrSTnodes[SSTACKNODE_ARRLEN];
 	SStackNode* psNext;
 };
 
@@ -15,8 +15,8 @@ class CTnStack
 		unsigned int uiTotalElementCount;
 
 	public:
-		unsigned int push(STreeNode* sNode);
-		STreeNode* pop(unsigned int* puiElementsLeft);
+		unsigned int push(STreeNode** sNode);
+		STreeNode** pop(unsigned int* puiElementsLeft);
 		void clear();
 
 		CTnStack();

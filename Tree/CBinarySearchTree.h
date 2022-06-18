@@ -9,20 +9,20 @@ enum ENodeMatchType
 	NO_MATCH
 };
 
-enum EWalkReason
-{
-	DELETE,
-	DELETE_INORDER,
-	INSERT,
-	FIND_CLOSEST,
-	FIND_EXACT,
-};
-
 extern class CAvlTree;
 
 class CBinarySearchTree
 {
 	private:
+		enum EWalkReason
+		{
+			DELETE,
+			DELETE_INORDER,
+			INSERT,
+			FIND_CLOSEST,
+			FIND_EXACT,
+		};
+
 		STreeNode* psRoot;
 		CTnStack *poTnStack;
 		
@@ -32,7 +32,7 @@ class CBinarySearchTree
 		bool delNode_twoChildrenCase(STreeNode* psTreeWalker);
 		bool delNode(STreeNode* psTreeWalker, STreeNode* psTwParent);
 		void inorderTraverse(STreeNode* psRoot);
-		STreeNode* walkPathFromTo(STreeNode* psStart, int iNumber, STreeNode** ppsTwParent, EWalkReason eReason);
+		STreeNode** walkPathFromTo(STreeNode** ppsStart, int iNumber, STreeNode** ppsTwParent, EWalkReason eReason);
 
 		friend class CAvlTree;
 	public:
