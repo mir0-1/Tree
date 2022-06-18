@@ -113,7 +113,7 @@ bool CBinarySearchTree::insert(int iNumber, void* pvExtAllocData)
 		poTnStack->clear();
 
 	STreeNode* psCvnParent;
-	STreeNode* psClosestValueNode = walkPathFromTo(&psRoot, iNumber, &psCvnParent, EWalkReason::INSERT);
+	STreeNode* psClosestValueNode = walkPathFromTo(psRoot, iNumber, &psCvnParent, EWalkReason::INSERT);
 
 	if (psClosestValueNode == nullptr)
 	{
@@ -151,28 +151,23 @@ void CBinarySearchTree::inorderTraverse(STreeNode* psRoot)
 }
 
 
-STreeNode** CBinarySearchTree::walkPathFromTo(STreeNode** ppsStart, int iNumber, STreeNode** ppsTwParent, EWalkReason eReason)
+STreeNode* CBinarySearchTree::walkPathFromTo(STreeNode* psStart, int iNumber, STreeNode** ppsTwParent, EWalkReason eReason)
 {
-	if (ppsStart == nullptr || *ppsStart == nullptr)
-		return nullptr;
-
-	STreeNode** ppsTreeWalker = ppsStart;
-	STreeNode* psTreeWalker = *ppsTreeWalker;
+	STreeNode* psTreeWalker = psStart;
 	STreeNode* psTwParent;
 
 	bool bExactMatch = false;
 
 	psTwParent = nullptr;
 
-	if (eReason == EWalkReason::DELETE_INORDER && ppsTreeWalker)
+	if (eReason == EWalkReason::DELETE_INORDER && psTreeWalker)
 	{
-		psTwParent = *ppsTreeWalker;
-		*ppsTreeWalker = (*ppsTreeWalker)->psRight;
+		psTwParent = psTreeWalker;
+		psTreeWalker = psTreeWalker->psRight;
 	}
 
 	while (psTreeWalker)
 	{
-		psTreeWalker = *ppsTreeWalker;
 
 		if (poTnStack && (eReason  == EWalkReason::DELETE || eReason == EWalkReason::INSERT || EWalkReason::DELETE_INORDER))
 			poTnStack->push(psTreeWalker);
@@ -186,13 +181,13 @@ STreeNode** CBinarySearchTree::walkPathFromTo(STreeNode** ppsStart, int iNumber,
 		if (psTreeWalker->psLeft && iNumber < psTreeWalker->iNumber)
 		{
 			psTwParent = psTreeWalker;
-			ppsTreeWalker = &psTreeWalker->psLeft;
+			psTreeWalker = psTreeWalker->psLeft;
 		}
 
 		else if (eReason != EWalkReason::DELETE_INORDER && psTreeWalker->psRight && iNumber > psTreeWalker->iNumber)
 		{
 			psTwParent = psTreeWalker;
-			ppsTreeWalker = &psTreeWalker->psRight;
+			psTreeWalker = psTreeWalker->psRight;
 		}
 
 		else
@@ -206,7 +201,7 @@ STreeNode** CBinarySearchTree::walkPathFromTo(STreeNode** ppsStart, int iNumber,
 		if (ppsTwParent)
 			*ppsTwParent = psTwParent;
 
-		return ppsTreeWalker;
+		return psTreeWalker;
 	}
 
 	return nullptr;
@@ -218,7 +213,7 @@ bool CBinarySearchTree::remove(int iNumber)
 		poTnStack->clear();
 
 	STreeNode* psTwParent;
-	STreeNode* psTreeWalker = walkPathFromTo(&psRoot, iNumber, &psTwParent, EWalkReason::DELETE);
+	STreeNode* psTreeWalker = walkPathFromTo(psRoot, iNumber, &psTwParent, EWalkReason::DELETE);
 
 	return delNode(psTreeWalker, psTwParent);
 }
@@ -228,7 +223,7 @@ ENodeMatchType CBinarySearchTree::find(int iNumber, bool bExactMatch)
 {
 	EWalkReason eReason = bExactMatch ? EWalkReason::FIND_EXACT : EWalkReason::FIND_CLOSEST;
 
-	STreeNode* psResult = walkPathFromTo(&psRoot, iNumber, nullptr, eReason);
+	STreeNode* psResult = walkPathFromTo(psRoot, iNumber, nullptr, eReason);
 
 	if (psResult->iNumber == iNumber)
 		return ENodeMatchType::EXACT_MATCH;

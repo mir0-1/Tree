@@ -1,7 +1,7 @@
 #include "CTnStack.h"
 #include <stdio.h>
 
-unsigned int CTnStack::push(STreeNode** ppsNode)
+unsigned int CTnStack::push(STreeNode* sNode)
 {
 	if (uiTotalElementCount % SSTACKNODE_ARRLEN == 0)
 	{
@@ -10,13 +10,13 @@ unsigned int CTnStack::push(STreeNode** ppsNode)
 		psHead = psNode;
 	}
 
-	psHead->pArrSTnodes[uiTotalElementCount % SSTACKNODE_ARRLEN] = ppsNode;
+	psHead->pArrSTnodes[uiTotalElementCount % SSTACKNODE_ARRLEN] = sNode;
 	uiTotalElementCount++;
 
 	return uiTotalElementCount;
 }
 
-STreeNode** CTnStack::pop(unsigned int* puiElementsLeft)
+STreeNode* CTnStack::pop(unsigned int* puiElementsLeft)
 {
 	if (psHead == nullptr)
 	{
@@ -25,11 +25,11 @@ STreeNode** CTnStack::pop(unsigned int* puiElementsLeft)
 		return nullptr;
 	}
 
-	STreeNode** ppsPopped = nullptr;
+	STreeNode* psPopped = nullptr;
 	SStackNode* psEmptySn;
 
 	uiTotalElementCount--;
-	ppsPopped = psHead->pArrSTnodes[uiTotalElementCount % SSTACKNODE_ARRLEN];
+	psPopped = psHead->pArrSTnodes[uiTotalElementCount % SSTACKNODE_ARRLEN];
 
 	if (uiTotalElementCount % SSTACKNODE_ARRLEN == 0)
 	{
@@ -41,7 +41,7 @@ STreeNode** CTnStack::pop(unsigned int* puiElementsLeft)
 	if (puiElementsLeft)
 		*puiElementsLeft = uiTotalElementCount;
 
-	return ppsPopped;
+	return psPopped;
 }
 
 void CTnStack::clear()

@@ -16,7 +16,7 @@ int main()
 	
 	while (true)
 	{
-		printf("Enter op.\nTREE:\tInsert:0\tDelete:1\tRotateLeft:4\tRotateRight:5\nSTACK:\tPush:2\t\tPop:3\nEXIT:\tExit:-1\nop:");
+		printf("Enter op.\nTREE:\tInsert:0\tDelete:1\nSTACK:\tPush:2\t\tPop:3\nEXIT:\tExit:-1\nop:");
 		scanf("%d", &op);
 		if (op == -1)
 			break;
@@ -36,11 +36,17 @@ int main()
 			printf("Removed %d from BST\n", key);
 		}
 
-		else if (op == 4)
-			bst.t_leftRotate();
+		else if (op == 2)
+		{
+			printf("push key: ");
+			scanf("%d", &key);
+			oStack.push((STreeNode*)key);
+		}
 
-		else if (op == 5)
-			bst.t_rightRotate();
+		else if (op == 3)
+		{
+			oStack.pop(nullptr);
+		}
 	}
 
 	bst.inorderPrint();
