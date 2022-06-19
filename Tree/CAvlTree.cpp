@@ -1,82 +1,11 @@
 #include "CAvlTree.h"
 
-bool CAvlTree::insert(int iNumber, void* pvExtAllocData)
-{
-	bool bResult = CBinarySearchTree::insert(iNumber, pvExtAllocData);
-
-	if (!bResult)
-		return false;
-
-	updateHeightsAndRotate();
-
-	return true;
-}
-
-bool CAvlTree::remove(int iNumber)
-{
-	bool bResult = CBinarySearchTree::remove(iNumber);
-
-	if (!bResult)
-		return false;
-
-	updateHeightsAndRotate();
-
-	return true;
-}
-
-STreeNode* CAvlTree::t_leftRotate()
-{
-	return psRoot = leftRotate(psRoot);
-}
-
-STreeNode* CAvlTree::t_rightRotate()
-{
-	return psRoot = rightRotate(psRoot);
-}
-
 int CAvlTree::nodeHeight(STreeNode* psNode)
 {
 	if (psNode == nullptr)
 		return -1;
 
 	return psNode->uiHeight;
-}
-
-void CAvlTree::updateHeightsAndRotate()
-{
-	STreeNode* psPassedNode;
-	STreeNode** ppsParentConnection;
-	int iBalanceFactor;
-
-	while (psPassedNode = poTnStack->pop(nullptr))
-	{
-		psPassedNode->uiHeight = max(nodeHeight(psPassedNode->psLeft), nodeHeight(psPassedNode->psRight)) + 1;
-		iBalanceFactor = getBalance(psPassedNode);
-
-		if (iBalanceFactor < -1)
-		{
-			int iLeftBalance = getBalance(psPassedNode->psLeft);
-
-			if (iLeftBalance >= 1)
-				psPassedNode->psLeft = leftRotate(psPassedNode->psLeft);
-
-			ppsParentConnection = getParentConnectionFromStack(psPassedNode);
-			*ppsParentConnection = rightRotate(psPassedNode);
-
-		}
-
-		else if (iBalanceFactor > 1)
-		{
-			int iRightBalance = getBalance(psPassedNode->psRight);
-
-			if (iRightBalance <= -1)
-				psPassedNode->psRight = rightRotate(psPassedNode->psRight);
-
-			ppsParentConnection = getParentConnectionFromStack(psPassedNode);
-			*ppsParentConnection = leftRotate(psPassedNode);
-		}
-	}
-
 }
 
 unsigned int CAvlTree::max(int val1, int val2)
@@ -124,28 +53,32 @@ STreeNode* CAvlTree::rightRotate(STreeNode* psOldRoot)
 	return psNewRoot;
 }
 
-STreeNode** CAvlTree::getParentConnectionFromStack(STreeNode *psPoppedNode)
+STreeNode* CAvlTree::postOperation(STreeNode* psTreeWalker)
 {
-	if (psPoppedNode == nullptr)
-		return nullptr;
+	int iBalanceFactor;
 
-	STreeNode* psParent = poTnStack->peek(0);
+	psTreeWalker->uiHeight = max(nodeHeight(psTreeWalker->psLeft), nodeHeight(psTreeWalker->psRight)) + 1;
+	iBalanceFactor = getBalance(psTreeWalker);
 
-	if (psParent == nullptr)
-		return &psRoot;
-	if (psParent->psLeft == psPoppedNode)
-		return &psParent->psLeft;
+	if (iBalanceFactor < -1)
+	{
+		int iLeftBalance = getBalance(psTreeWalker->psLeft);
 
-	return &psParent->psRight;
-}
+		if (iLeftBalance >= 1)
+			psTreeWalker->psLeft = leftRotate(psTreeWalker->psLeft);
 
+		psTreeWalker = rightRotate(psTreeWalker);
+	}
 
-CAvlTree::CAvlTree() : CBinarySearchTree()
-{
-	poTnStack = new CTnStack;
-}
+	else if (iBalanceFactor > 1)
+	{
+		int iRightBalance = getBalance(psTreeWalker->psRight);
 
-CAvlTree::~CAvlTree()
-{
-	delete poTnStack;
+		if (iRightBalance <= -1)
+			psTreeWalker->psRight = rightRotate(psTreeWalker->psRight);
+
+		psTreeWalker = leftRotate(psTreeWalker);
+	}
+
+	return psTreeWalker;
 }

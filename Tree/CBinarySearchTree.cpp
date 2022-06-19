@@ -4,238 +4,155 @@
 #include <limits>
 
 
-STreeNode* CBinarySearchTree::newNode(int iNumber, void* pvAllocExtraData)
+STreeNode* CBinarySearchTree::util_rm_caseOneChild(STreeNode* psToBeRmed, STreeNode* psCopyToNode)
 {
-	STreeNode* sNode = new STreeNode;
+	if (psToBeRmed == nullptr || (psToBeRmed->psLeft && psToBeRmed->psRight))
+		return psToBeRmed;
 
-	sNode->iNumber = iNumber;
-	sNode->pvExtAllocData = pvAllocExtraData;
-	sNode->psLeft = nullptr;
-	sNode->psRight = nullptr;
-	sNode->uiHeight = 0;
+	STreeNode* psChildTree = psToBeRmed->psLeft ? psToBeRmed->psLeft : psToBeRmed->psRight;
 
-	return sNode;
+	if (psCopyToNode)
+	{
+		psCopyToNode->iNumber = psToBeRmed->iNumber;
+		psCopyToNode->pvExtAllocData = psToBeRmed->pvExtAllocData;
+	}
+
+	delete psToBeRmed;
+	psToBeRmed = psChildTree;
+
+	return psToBeRmed;
 }
 
-bool CBinarySearchTree::delNode_noChildrenCase(STreeNode* psTreeWalker, STreeNode* psWalkerParent)
+STreeNode* CBinarySearchTree::util_rm_noChildren(STreeNode* psToBeRmed, STreeNode* psCopyToNode)
 {
-	if (!psTreeWalker || !psWalkerParent)
-		return false;
+	if (psToBeRmed == nullptr)
+		return nullptr;
 
-	STreeNode** ppsTarget = nullptr;
-
-	if (psWalkerParent->psLeft == psTreeWalker)
-		ppsTarget = &psWalkerParent->psLeft;
-
-	else if (psWalkerParent->psRight == psTreeWalker)
-		ppsTarget = &psWalkerParent->psRight;
-
-	if (ppsTarget)
+	if (psCopyToNode)
 	{
-		delete psTreeWalker;
-		(*ppsTarget) = nullptr;
-
-		if (poTnStack)
-			poTnStack->pop(nullptr);
-
-		return true;
+		psCopyToNode->iNumber = psToBeRmed->iNumber;
+		psCopyToNode->pvExtAllocData = psToBeRmed->pvExtAllocData;
 	}
 
-
-	return false;
-}
-
-bool CBinarySearchTree::delNode_oneChildCase(STreeNode* psTreeWalker)
-{
-	if (!psTreeWalker)
-		return false;
-
-	STreeNode* psWalkerChild;
-
-	if (psTreeWalker->psLeft)
-		psWalkerChild = psTreeWalker->psLeft;
-
-	else if (psTreeWalker->psRight)
-		psWalkerChild = psTreeWalker->psRight;
-	else
-		return false;
-
-	psTreeWalker->iNumber = psWalkerChild->iNumber;
-	psTreeWalker->pvExtAllocData = psWalkerChild->pvExtAllocData;
-
-	delete psWalkerChild;
-	if (psTreeWalker->psLeft)
-		psTreeWalker->psLeft = nullptr;
-	else
-		psTreeWalker->psRight = nullptr;
-
-	return true;
-}
-
-bool CBinarySearchTree::delNode_twoChildrenCase(STreeNode* psTreeWalker)
-{
-	STreeNode* psInorderSuccessor;
-	STreeNode* psParent;
-
-	if (!psTreeWalker || !psTreeWalker->psRight)
-		return false;
-
-	psInorderSuccessor = walkPathFromTo(psTreeWalker, INT_MIN, &psParent, EWalkReason::DELETE_INORDER);
-
-	psTreeWalker->iNumber = psInorderSuccessor->iNumber;
-	psTreeWalker->pvExtAllocData = psInorderSuccessor->pvExtAllocData;
-
-	return delNode(psInorderSuccessor, psParent);
-}
-
-bool CBinarySearchTree::delNode(STreeNode* psTreeWalker, STreeNode* psTwParent)
-{
-	if (psTreeWalker)
-	{
-		bool bTwHasLeftChild = (psTreeWalker->psLeft != nullptr);
-		bool bTwHasRightChild = (psTreeWalker->psRight != nullptr);
-
-		if (!bTwHasLeftChild && !bTwHasRightChild)
-			return delNode_noChildrenCase(psTreeWalker, psTwParent);
-
-		if (!bTwHasLeftChild || !bTwHasRightChild)
-			return delNode_oneChildCase(psTreeWalker);
-
-		return delNode_twoChildrenCase(psTreeWalker);
-	}
-
-	return false;
-}
-
-bool CBinarySearchTree::insert(int iNumber, void* pvExtAllocData)
-{
-	if (poTnStack)
-		poTnStack->clear();
-
-	STreeNode* psCvnParent;
-	STreeNode* psClosestValueNode = walkPathFromTo(psRoot, iNumber, &psCvnParent, EWalkReason::INSERT);
-
-	if (psClosestValueNode == nullptr)
-	{
-		psRoot = newNode(iNumber, pvExtAllocData);
-		return true;
-	}
-
-	if (psClosestValueNode->psLeft == nullptr && iNumber < psClosestValueNode->iNumber)
-	{
-		psClosestValueNode->psLeft = newNode(iNumber, pvExtAllocData);
-		return true;
-	}
-
-	if (psClosestValueNode->psRight == nullptr && iNumber > psClosestValueNode->iNumber)
-	{
-		psClosestValueNode->psRight = newNode(iNumber, pvExtAllocData);
-		return true;
-	}
-
-	return false;
-}
-
-void CBinarySearchTree::inorderTraverse(STreeNode* psRoot)
-{
-	if (psRoot == nullptr)
-		return;
-
-	if (psRoot->psLeft)
-		inorderTraverse(psRoot->psLeft);
-
-	printf("%d\t", psRoot->iNumber);
-
-	if (psRoot->psRight)
-		inorderTraverse(psRoot->psRight);
-}
-
-
-STreeNode* CBinarySearchTree::walkPathFromTo(STreeNode* psStart, int iNumber, STreeNode** ppsTwParent, EWalkReason eReason)
-{
-	STreeNode* psTreeWalker = psStart;
-	STreeNode* psTwParent;
-
-	bool bExactMatch = false;
-
-	psTwParent = nullptr;
-
-	if (eReason == EWalkReason::DELETE_INORDER && psTreeWalker)
-	{
-		psTwParent = psTreeWalker;
-		psTreeWalker = psTreeWalker->psRight;
-	}
-
-	while (psTreeWalker)
-	{
-		if (poTnStack && (eReason  == EWalkReason::DELETE || eReason == EWalkReason::INSERT || EWalkReason::DELETE_INORDER))
-			poTnStack->push(psTreeWalker);
-
-		if (iNumber == psTreeWalker->iNumber)
-		{
-			bExactMatch = true;
-			break;
-		}
-
-		if (psTreeWalker->psLeft && iNumber < psTreeWalker->iNumber)
-		{
-			psTwParent = psTreeWalker;
-			psTreeWalker = psTreeWalker->psLeft;
-		}
-
-		else if (eReason != EWalkReason::DELETE_INORDER && psTreeWalker->psRight && iNumber > psTreeWalker->iNumber)
-		{
-			psTwParent = psTreeWalker;
-			psTreeWalker = psTreeWalker->psRight;
-		}
-
-		else
-			break;
-	}
-
-	if ( eReason == EWalkReason::FIND_CLOSEST || eReason == EWalkReason::INSERT ||
-		(eReason == EWalkReason::DELETE && bExactMatch) ||
-		eReason == EWalkReason::DELETE_INORDER)
-	{
-		if (ppsTwParent)
-			*ppsTwParent = psTwParent;
-
-		return psTreeWalker;
-	}
+	delete psToBeRmed;
+	psToBeRmed = nullptr;
 
 	return nullptr;
 }
 
-bool CBinarySearchTree::remove(int iNumber)
+STreeNode* CBinarySearchTree::util_rm_twoChildren(STreeNode* psToBeRmed)
 {
-	if (poTnStack)
-		poTnStack->clear();
-
-	STreeNode* psTwParent;
-	STreeNode* psTreeWalker = walkPathFromTo(psRoot, iNumber, &psTwParent, EWalkReason::DELETE);
-
-	return delNode(psTreeWalker, psTwParent);
+	if (psToBeRmed)
+		psToBeRmed->psRight = util_remove(psToBeRmed->psRight, INT_MIN, psToBeRmed);
+	return psToBeRmed;
 }
 
-
-ENodeMatchType CBinarySearchTree::find(int iNumber, bool bExactMatch)
+STreeNode* CBinarySearchTree::postOperation(STreeNode* psTreeWalker)
 {
-	EWalkReason eReason = bExactMatch ? EWalkReason::FIND_EXACT : EWalkReason::FIND_CLOSEST;
+	return psTreeWalker;
+}
 
-	STreeNode* psResult = walkPathFromTo(psRoot, iNumber, nullptr, eReason);
+void CBinarySearchTree::onNodeTraverse(STreeNode *psNode, void* pvExtraArgs)
+{
+	printf("%d\t", psNode->iNumber);
+}
 
-	if (psResult->iNumber == iNumber)
-		return ENodeMatchType::EXACT_MATCH;
+STreeNode* CBinarySearchTree::util_rm_dispatchCases(STreeNode* psToBeRmed, STreeNode* psCopyToNode)
+{
+	if (psToBeRmed == nullptr)
+		return nullptr;
 
-	if (!bExactMatch && psResult)
-		return ENodeMatchType::CLOSEST_MATCH;
-	
-	return ENodeMatchType::NO_MATCH;
+	if ((bool)psToBeRmed->psLeft != (bool)psToBeRmed->psRight)
+		psToBeRmed = util_rm_caseOneChild(psToBeRmed, psCopyToNode);
+
+	else if (psToBeRmed->psLeft && psToBeRmed->psRight)
+		psToBeRmed = util_rm_twoChildren(psToBeRmed);
+
+	else if (!psToBeRmed->psLeft && !psToBeRmed->psRight)
+		psToBeRmed = util_rm_noChildren(psToBeRmed, psCopyToNode);
+
+	return psToBeRmed;
+}
+
+STreeNode* CBinarySearchTree::newNode(int iNumber, void* pvExtAllocData)
+{
+	STreeNode* psNode = new STreeNode;
+
+	psNode->iNumber = iNumber;
+	psNode->pvExtAllocData = pvExtAllocData;
+	psNode->psLeft = nullptr;
+	psNode->psRight = nullptr;
+	psNode->uiHeight = 0;
+
+	return psNode;
+}
+
+STreeNode* CBinarySearchTree::util_insert(STreeNode* psTreeWalker, int iNumber, void* pvAllocExtraData)
+{
+	if (psTreeWalker == nullptr)
+	{
+		psTreeWalker = newNode(iNumber, pvAllocExtraData);
+		return psTreeWalker;
+	}
+
+	if (iNumber < psTreeWalker->iNumber)
+		psTreeWalker->psLeft = util_insert(psTreeWalker->psLeft, iNumber, pvAllocExtraData);
+
+	else if (iNumber > psTreeWalker->iNumber)
+		psTreeWalker->psRight = util_insert(psTreeWalker->psRight, iNumber, pvAllocExtraData);
+
+	psTreeWalker = postOperation(psTreeWalker);
+	return psTreeWalker;
+}
+
+STreeNode* CBinarySearchTree::util_remove(STreeNode* psTreeWalker, int iNumber, STreeNode* psPrecedessor)
+{
+	if (psTreeWalker == nullptr)
+		return nullptr;
+
+	if (iNumber == psTreeWalker->iNumber || psPrecedessor && (psTreeWalker->psLeft == nullptr))
+	{
+		psTreeWalker = util_rm_dispatchCases(psTreeWalker, psPrecedessor);
+		return psTreeWalker;
+	}
+
+	if (iNumber < psTreeWalker->iNumber)
+		psTreeWalker->psLeft = util_remove(psTreeWalker->psLeft, iNumber, psPrecedessor);
+
+	else if (iNumber > psTreeWalker->iNumber)
+		psTreeWalker->psRight = util_remove(psTreeWalker->psRight, iNumber, psPrecedessor);
+
+	psTreeWalker = postOperation(psTreeWalker);
+	return psTreeWalker;
+}
+
+void CBinarySearchTree::util_inorderTraverse(STreeNode* psRoot, void *pvExtraArgs)
+{
+	if (psRoot)
+	{
+		if (psRoot->psLeft)
+			util_inorderTraverse(psRoot->psLeft, pvExtraArgs);
+
+		onNodeTraverse(psRoot, pvExtraArgs);
+
+		if (psRoot->psRight)
+			util_inorderTraverse(psRoot->psRight, pvExtraArgs);
+	}
+}
+
+void CBinarySearchTree::insert(int iNumber, void* pvExtAllocData)
+{
+	psRoot = util_insert(psRoot, iNumber, pvExtAllocData);
+}
+
+void CBinarySearchTree::remove(int iNumber)
+{
+	psRoot = util_remove(psRoot, iNumber, nullptr);
 }
 
 void CBinarySearchTree::inorderPrint()
 {
-	inorderTraverse(psRoot);
+	util_inorderTraverse(psRoot, nullptr);
 }
 
 CBinarySearchTree::CBinarySearchTree()
