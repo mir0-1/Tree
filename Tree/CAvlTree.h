@@ -4,12 +4,12 @@
 class CAvlTree : public CBinarySearchTree
 {
 	private:
-		int nodeHeight(STreeNode* psNode);
+		int nodeHeight(CTreeNode* poNode);
 		unsigned int max(int val1, int val2);
-		int getBalance(STreeNode* psNode);
-		STreeNode* leftRotate(STreeNode* psNode);
-		STreeNode* rightRotate(STreeNode* psNode);
+		int getBalance(CTreeNode* poNode);
+		CTreeNode* leftRotate(CTreeNode* poNode);
+		CTreeNode* rightRotate(CTreeNode* poNode);
 
-		STreeNode* postOperation(STreeNode* psTreeWalker);
+		CTreeNode* postOperation(CTreeNode* poTreeWalker);
 
 };

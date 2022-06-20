@@ -40,7 +40,7 @@ int main()
 		{
 			printf("Stack push key: ");
 			scanf("%d", &key);
-			oStack.push((STreeNode*)key);
+			oStack.push((CTreeNode*)key);
 			printf("Pushed %d on stack\n", key);
 		}
 

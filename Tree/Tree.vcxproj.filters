@@ -27,6 +27,9 @@
     <ClCompile Include="CTnStack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CTreeNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CBinarySearchTree.h">
@@ -35,10 +38,10 @@
     <ClInclude Include="CAvlTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="STreeNode.h">
+    <ClInclude Include="CTnStack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CTnStack.h">
+    <ClInclude Include="CTreeNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,11 +1,11 @@
 #include "CAvlTree.h"
 
-int CAvlTree::nodeHeight(STreeNode* psNode)
+int CAvlTree::nodeHeight(CTreeNode* poNode)
 {
-	if (psNode == nullptr)
+	if (poNode == nullptr)
 		return -1;
 
-	return psNode->uiHeight;
+	return poNode->uiHeight;
 }
 
 unsigned int CAvlTree::max(int val1, int val2)
@@ -16,69 +16,69 @@ unsigned int CAvlTree::max(int val1, int val2)
 	return val2;
 }
 
-int CAvlTree::getBalance(STreeNode* psNode)
+int CAvlTree::getBalance(CTreeNode* poNode)
 {
-	if (psNode == nullptr)
+	if (poNode == nullptr)
 		return 0;
-	return nodeHeight(psNode->psRight) - nodeHeight(psNode->psLeft);
+	return nodeHeight(poNode->nextRight()) - nodeHeight(poNode->nextLeft());
 }
 
-STreeNode* CAvlTree::leftRotate(STreeNode* psOldRoot)
+CTreeNode* CAvlTree::leftRotate(CTreeNode* poOldRoot)
 {
-	if (!psOldRoot || !psOldRoot->psRight)
+	if (!poOldRoot || !poOldRoot->nextRight())
 		return nullptr;
 
-	STreeNode* psNewRoot = psOldRoot->psRight;
-	psOldRoot->psRight = psNewRoot->psLeft;
-	psNewRoot->psLeft = psOldRoot;
+	CTreeNode* poNewRoot = poOldRoot->nextRight();
+	poOldRoot->nextRight(poNewRoot->nextLeft());
+	poNewRoot->nextLeft(poOldRoot);
 
-	psOldRoot->uiHeight = max(nodeHeight(psOldRoot->psLeft), nodeHeight(psOldRoot->psRight)) + 1;
-	psNewRoot->uiHeight = max(nodeHeight(psNewRoot->psLeft), nodeHeight(psNewRoot->psRight)) + 1;
+	poOldRoot->uiHeight = max(nodeHeight(poOldRoot->nextLeft()), nodeHeight(poOldRoot->nextRight())) + 1;
+	poNewRoot->uiHeight = max(nodeHeight(poNewRoot->nextLeft()), nodeHeight(poNewRoot->nextRight())) + 1;
 
-	return psNewRoot;
+	return poNewRoot;
 }
 
-STreeNode* CAvlTree::rightRotate(STreeNode* psOldRoot)
+CTreeNode* CAvlTree::rightRotate(CTreeNode* poOldRoot)
 {
-	if (!psOldRoot || !psOldRoot->psLeft)
+	if (!poOldRoot || !poOldRoot->nextLeft())
 		return nullptr;
 
-	STreeNode* psNewRoot = psOldRoot->psLeft;
-	psOldRoot->psLeft = psNewRoot->psRight;
-	psNewRoot->psRight = psOldRoot;
+	CTreeNode* poNewRoot = poOldRoot->nextLeft();
+	poOldRoot->nextLeft(poNewRoot->nextRight());
+	poNewRoot->nextRight(poOldRoot);
 
-	psOldRoot->uiHeight = max(nodeHeight(psOldRoot->psLeft), nodeHeight(psOldRoot->psRight)) + 1;
-	psNewRoot->uiHeight = max(nodeHeight(psNewRoot->psLeft), nodeHeight(psNewRoot->psRight)) + 1;
+	poOldRoot->uiHeight = max(nodeHeight(poOldRoot->nextLeft()), nodeHeight(poOldRoot->nextRight())) + 1;
+	poNewRoot->uiHeight = max(nodeHeight(poNewRoot->nextLeft()), nodeHeight(poNewRoot->nextRight())) + 1;
 
-	return psNewRoot;
+	return poNewRoot;
 }
 
-STreeNode* CAvlTree::postOperation(STreeNode* psTreeWalker)
+CTreeNode* CAvlTree::postOperation(CTreeNode* poTreeWalker)
 {
 	int iBalanceFactor;
 
-	psTreeWalker->uiHeight = max(nodeHeight(psTreeWalker->psLeft), nodeHeight(psTreeWalker->psRight)) + 1;
-	iBalanceFactor = getBalance(psTreeWalker);
+	poTreeWalker->uiHeight = max(nodeHeight(poTreeWalker->nextLeft()), nodeHeight(poTreeWalker->nextRight())) + 1;
+	iBalanceFactor = getBalance(poTreeWalker);
 
 	if (iBalanceFactor < -1)
 	{
-		int iLeftBalance = getBalance(psTreeWalker->psLeft);
+		int iLeftBalance = getBalance(poTreeWalker->nextLeft());
 
 		if (iLeftBalance >= 1)
-			psTreeWalker->psLeft = leftRotate(psTreeWalker->psLeft);
+			poTreeWalker->nextLeft(leftRotate(poTreeWalker->nextLeft()));
 
-		psTreeWalker = rightRotate(psTreeWalker);
+		poTreeWalker = rightRotate(poTreeWalker);
 	}
 
 	else if (iBalanceFactor > 1)
 	{
-		int iRightBalance = getBalance(psTreeWalker->psRight);
+		int iRightBalance = getBalance(poTreeWalker->nextRight());
 
 		if (iRightBalance <= -1)
-			psTreeWalker->psRight = rightRotate(psTreeWalker->psRight);
+			poTreeWalker->nextRight(rightRotate(poTreeWalker->nextRight()));
 
-		psTreeWalker = leftRotate(psTreeWalker);
+		poTreeWalker = leftRotate(poTreeWalker);
 	}
 
-	return psTreeWalker;
+	return poTreeWalker;
 }

@@ -1,5 +1,5 @@
 #pragma once
-#include "STreeNode.h"
+#include "CTreeNode.h"
 #include "CTnStack.h"
 
 enum ENodeMatchType
@@ -14,21 +14,20 @@ class CAvlTree;
 class CBinarySearchTree
 {
 	private:
-		STreeNode* psRoot;
+		CTreeNode* psRoot;
 
-		STreeNode* util_rm_dispatchCases(STreeNode* psToBeRmed, STreeNode* psCopyToNode);
-		STreeNode* util_rm_caseOneChild(STreeNode* psToBeRmed, STreeNode* psCopyToNode);
-		STreeNode* util_rm_noChildren(STreeNode* psToBeRmed, STreeNode *psCopyToNode);
-		STreeNode* util_rm_twoChildren(STreeNode* psToBeRmed);
+		CTreeNode* util_rm_dispatchCases(CTreeNode* poToBeRmed, CTreeNode* poCopyToNode);
+		CTreeNode* util_rm_caseOneChild(CTreeNode* poToBeRmed, CTreeNode* poCopyToNode);
+		CTreeNode* util_rm_noChildren(CTreeNode* poToBeRmed, CTreeNode *poCopyToNode);
+		CTreeNode* util_rm_twoChildren(CTreeNode* poToBeRmed);
 
-		virtual STreeNode* postOperation(STreeNode* psTreeWalker);
-		virtual void onNodeTraverse(STreeNode* psNode, void* pvExtraArgs);
+		virtual CTreeNode* postOperation(CTreeNode* poTreeWalker);
+		virtual void onNodeTraverse(CTreeNode* poNode, void* pvExtraArgs);
 		
-		STreeNode* newNode(int iNumber, void* pvAllocExtraData);
-		STreeNode* util_insert(STreeNode *psRoot, int iNumber, void* pvAllocExtraData);
-		STreeNode* util_remove(STreeNode* psRoot, int iNumber, STreeNode* psCopyToNode);
+		CTreeNode* util_insert(CTreeNode *poRoot, int iNumber, void* pvAllocExtraData);
+		CTreeNode* util_remove(CTreeNode* poRoot, int iNumber, CTreeNode* poCopyToNode);
 
-		void util_inorderTraverse(STreeNode* psRoot, void *pvExtraArgs);
+		void util_inorderTraverse(CTreeNode* poRoot, void *pvExtraArgs);
 
 		friend class CAvlTree;
 	public:

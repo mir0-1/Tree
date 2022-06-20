@@ -4,12 +4,12 @@
 #include <limits>
 
 
-STreeNode* CBinarySearchTree::util_rm_caseOneChild(STreeNode* psToBeRmed, STreeNode* psCopyToNode)
+CTreeNode* CBinarySearchTree::util_rm_caseOneChild(CTreeNode* psToBeRmed, CTreeNode* psCopyToNode)
 {
-	if (psToBeRmed == nullptr || (psToBeRmed->psLeft && psToBeRmed->psRight))
+	if (psToBeRmed == nullptr || (psToBeRmed->nextLeft() && psToBeRmed->nextRight()))
 		return psToBeRmed;
 
-	STreeNode* psChildTree = psToBeRmed->psLeft ? psToBeRmed->psLeft : psToBeRmed->psRight;
+	CTreeNode* psChildTree = psToBeRmed->nextLeft() ? psToBeRmed->nextLeft() : psToBeRmed->nextRight();
 
 	if (psCopyToNode)
 	{
@@ -23,7 +23,7 @@ STreeNode* CBinarySearchTree::util_rm_caseOneChild(STreeNode* psToBeRmed, STreeN
 	return psToBeRmed;
 }
 
-STreeNode* CBinarySearchTree::util_rm_noChildren(STreeNode* psToBeRmed, STreeNode* psCopyToNode)
+CTreeNode* CBinarySearchTree::util_rm_noChildren(CTreeNode* psToBeRmed, CTreeNode* psCopyToNode)
 {
 	if (psToBeRmed == nullptr)
 		return nullptr;
@@ -40,103 +40,90 @@ STreeNode* CBinarySearchTree::util_rm_noChildren(STreeNode* psToBeRmed, STreeNod
 	return nullptr;
 }
 
-STreeNode* CBinarySearchTree::util_rm_twoChildren(STreeNode* psToBeRmed)
+CTreeNode* CBinarySearchTree::util_rm_twoChildren(CTreeNode* psToBeRmed)
 {
 	if (psToBeRmed)
-		psToBeRmed->psRight = util_remove(psToBeRmed->psRight, INT_MIN, psToBeRmed);
+		psToBeRmed->nextRight(util_remove(psToBeRmed->nextRight(), INT_MIN, psToBeRmed));
 	return psToBeRmed;
 }
 
-STreeNode* CBinarySearchTree::postOperation(STreeNode* psTreeWalker)
+CTreeNode* CBinarySearchTree::postOperation(CTreeNode* psTreeWalker)
 {
 	return psTreeWalker;
 }
 
-void CBinarySearchTree::onNodeTraverse(STreeNode *psNode, void* pvExtraArgs)
+void CBinarySearchTree::onNodeTraverse(CTreeNode *psNode, void* pvExtraArgs)
 {
 	printf("%d\t", psNode->iNumber);
 }
 
-STreeNode* CBinarySearchTree::util_rm_dispatchCases(STreeNode* psToBeRmed, STreeNode* psCopyToNode)
+CTreeNode* CBinarySearchTree::util_rm_dispatchCases(CTreeNode* psToBeRmed, CTreeNode* psCopyToNode)
 {
 	if (psToBeRmed == nullptr)
 		return nullptr;
 
-	if ((bool)psToBeRmed->psLeft != (bool)psToBeRmed->psRight)
+	if ((bool)psToBeRmed->nextLeft() != (bool)psToBeRmed->nextRight())
 		psToBeRmed = util_rm_caseOneChild(psToBeRmed, psCopyToNode);
 
-	else if (psToBeRmed->psLeft && psToBeRmed->psRight)
+	else if (psToBeRmed->nextLeft() && psToBeRmed->nextRight())
 		psToBeRmed = util_rm_twoChildren(psToBeRmed);
 
-	else if (!psToBeRmed->psLeft && !psToBeRmed->psRight)
+	else if (!psToBeRmed->nextLeft() && !psToBeRmed->nextRight())
 		psToBeRmed = util_rm_noChildren(psToBeRmed, psCopyToNode);
 
 	return psToBeRmed;
 }
 
-STreeNode* CBinarySearchTree::newNode(int iNumber, void* pvExtAllocData)
-{
-	STreeNode* psNode = new STreeNode;
-
-	psNode->iNumber = iNumber;
-	psNode->pvExtAllocData = pvExtAllocData;
-	psNode->psLeft = nullptr;
-	psNode->psRight = nullptr;
-	psNode->uiHeight = 0;
-
-	return psNode;
-}
-
-STreeNode* CBinarySearchTree::util_insert(STreeNode* psTreeWalker, int iNumber, void* pvAllocExtraData)
+CTreeNode* CBinarySearchTree::util_insert(CTreeNode* psTreeWalker, int iNumber, void* pvAllocExtraData)
 {
 	if (psTreeWalker == nullptr)
 	{
-		psTreeWalker = newNode(iNumber, pvAllocExtraData);
+		psTreeWalker = new CTreeNode(iNumber, pvAllocExtraData);
 		return psTreeWalker;
 	}
 
 	if (iNumber < psTreeWalker->iNumber)
-		psTreeWalker->psLeft = util_insert(psTreeWalker->psLeft, iNumber, pvAllocExtraData);
+		psTreeWalker->nextLeft(util_insert(psTreeWalker->nextLeft(), iNumber, pvAllocExtraData));
 
 	else if (iNumber > psTreeWalker->iNumber)
-		psTreeWalker->psRight = util_insert(psTreeWalker->psRight, iNumber, pvAllocExtraData);
+		psTreeWalker->nextRight(util_insert(psTreeWalker->nextRight(), iNumber, pvAllocExtraData));
 
 	psTreeWalker = postOperation(psTreeWalker);
 	return psTreeWalker;
 }
 
-STreeNode* CBinarySearchTree::util_remove(STreeNode* psTreeWalker, int iNumber, STreeNode* psPrecedessor)
+CTreeNode* CBinarySearchTree::util_remove(CTreeNode* psTreeWalker, int iNumber, CTreeNode* psPrecedessor)
 {
 	if (psTreeWalker == nullptr)
 		return nullptr;
 
-	if (iNumber == psTreeWalker->iNumber || psPrecedessor && (psTreeWalker->psLeft == nullptr))
+	if (iNumber == psTreeWalker->iNumber || psPrecedessor && (psTreeWalker->nextLeft() == nullptr))
 	{
 		psTreeWalker = util_rm_dispatchCases(psTreeWalker, psPrecedessor);
 		return psTreeWalker;
 	}
 
 	if (iNumber < psTreeWalker->iNumber)
-		psTreeWalker->psLeft = util_remove(psTreeWalker->psLeft, iNumber, psPrecedessor);
+		psTreeWalker->nextLeft(util_remove(psTreeWalker->nextLeft(), iNumber, psPrecedessor));
 
 	else if (iNumber > psTreeWalker->iNumber)
-		psTreeWalker->psRight = util_remove(psTreeWalker->psRight, iNumber, psPrecedessor);
+		psTreeWalker->nextRight(util_remove(psTreeWalker->nextRight(), iNumber, psPrecedessor));
 
 	psTreeWalker = postOperation(psTreeWalker);
 	return psTreeWalker;
 }
 
-void CBinarySearchTree::util_inorderTraverse(STreeNode* psRoot, void *pvExtraArgs)
+void CBinarySearchTree::util_inorderTraverse(CTreeNode* psRoot, void *pvExtraArgs)
 {
 	if (psRoot)
 	{
-		if (psRoot->psLeft)
-			util_inorderTraverse(psRoot->psLeft, pvExtraArgs);
+		if (psRoot->nextLeft())
+			util_inorderTraverse(psRoot->nextLeft(), pvExtraArgs);
 
 		onNodeTraverse(psRoot, pvExtraArgs);
 
-		if (psRoot->psRight)
-			util_inorderTraverse(psRoot->psRight, pvExtraArgs);
+		if (psRoot->nextRight())
+			util_inorderTraverse(psRoot->nextRight(), pvExtraArgs);
 	}
 }
 

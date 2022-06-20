@@ -1,7 +1,7 @@
 #include "CTnStack.h"
 #include <stdio.h>
 
-unsigned int CTnStack::push(STreeNode* psNode)
+unsigned int CTnStack::push(CTreeNode* psNode)
 {
 	if (uiTotalElementCount % SSTACKNODE_ARRLEN == 0)
 	{
@@ -16,7 +16,7 @@ unsigned int CTnStack::push(STreeNode* psNode)
 	return uiTotalElementCount;
 }
 
-STreeNode* CTnStack::pop(unsigned int* puiElementsLeft)
+CTreeNode* CTnStack::pop(unsigned int* puiElementsLeft)
 {
 	if (psHead == nullptr)
 	{
@@ -25,7 +25,7 @@ STreeNode* CTnStack::pop(unsigned int* puiElementsLeft)
 		return nullptr;
 	}
 
-	STreeNode* psPopped = nullptr;
+	CTreeNode* psPopped = nullptr;
 	SStackNode* psEmptySn;
 
 	uiTotalElementCount--;
@@ -44,7 +44,7 @@ STreeNode* CTnStack::pop(unsigned int* puiElementsLeft)
 	return psPopped;
 }
 
-STreeNode* CTnStack::peek(unsigned int uiDepth)
+CTreeNode* CTnStack::peek(unsigned int uiDepth)
 {
 	SStackNode* psStackWalker = psHead;
 
