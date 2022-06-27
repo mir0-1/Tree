@@ -1,5 +1,4 @@
 #include "CTnStack.h"
-#include <stdio.h>
 
 unsigned int CTnStack::push(CTreeNode* psNode)
 {

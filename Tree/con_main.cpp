@@ -1,11 +1,11 @@
-#include <cstdio>
+/*#include <cstdio>
 #include <ctime>
 #include <cstdlib>
 #include "CBinarySearchTree.h"
 #include "CAvlTree.h"
 
 
-int main()
+int main2()
 {
 	int key, op;
 	CAvlTree bst;
@@ -69,4 +69,4 @@ int main()
 	bst.inorderPrint();
 
 	return 0;
-}
+}*/

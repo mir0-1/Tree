@@ -1,8 +1,5 @@
 #include "CBinarySearchTree.h"
-#include <cstring>
-#include <stdio.h>
 #include <limits>
-
 
 CTreeNode* CBinarySearchTree::util_rm_caseOneChild(CTreeNode* psToBeRmed, CTreeNode* psCopyToNode)
 {
